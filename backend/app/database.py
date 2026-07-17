@@ -26,4 +26,8 @@ def get_db():
 
 def init_db():
     """创建所有表（在应用启动时调用）"""
+    import app.models.roadmap  # noqa
+    import app.models.note     # noqa
+    import app.models.bookmark # noqa
+    import app.models.tag      # noqa
     Base.metadata.create_all(bind=engine)
