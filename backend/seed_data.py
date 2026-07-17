@@ -220,6 +220,47 @@ PAPER_META = {
     },
 }
 
+# 论文 URL 映射
+PAPER_URLS = {
+    "Attention Is All You Need": "https://arxiv.org/abs/1706.03762",
+    "BERT": "https://arxiv.org/abs/1810.04805",
+    "GPT-1": "https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf",
+    "GPT-2": "https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf",
+    "GPT-3": "https://arxiv.org/abs/2005.14165",
+    "Scaling Laws": "https://arxiv.org/abs/2001.08361",
+    "InstructGPT": "https://arxiv.org/abs/2203.02155",
+    "LoRA": "https://arxiv.org/abs/2106.09685",
+    "Chinchilla": "https://arxiv.org/abs/2203.15556",
+    "Chain-of-Thought": "https://arxiv.org/abs/2201.11903",
+    "FlashAttention": "https://arxiv.org/abs/2205.14135",
+    "Llama 1": "https://arxiv.org/abs/2302.13971",
+    "Llama 2": "https://arxiv.org/abs/2307.09288",
+    "QLoRA": "https://arxiv.org/abs/2305.14314",
+    "DPO": "https://arxiv.org/abs/2305.18290",
+    "PagedAttention / vLLM": "https://arxiv.org/abs/2309.06180",
+    "Llama 3": "https://arxiv.org/abs/2407.21783",
+    "RAG": "https://arxiv.org/abs/2005.11401",
+    "Tree of Thoughts": "https://arxiv.org/abs/2305.10601",
+    "Emergent Abilities": "https://arxiv.org/abs/2206.07682",
+    "MoE (Sparsely-Gated)": "https://arxiv.org/abs/1701.06538",
+}
+
+# 书籍 URL 映射
+BOOK_URLS = {
+    "《GPT 图解》": "",
+    "《大语言模型：基础与前沿》": "",
+    "《动手构建大模型》": "",
+    "Build a Large Language Model (From Scratch)": "https://github.com/rasbt/LLMs-from-scratch",
+    "《大模型RAG实战》": "https://github.com/Nipi64310/RAG-Book",
+}
+
+# 视频 URL 补充映射（源 markdown 中未包含链接的补充）
+VIDEO_URLS = {
+    "李沐 \"Transformer 论文精读\"": "https://www.bilibili.com/video/BV1pu411o7BE/",
+    "李宏毅 \"注意力机制\"": "https://www.bilibili.com/video/BV1Wv411h7kN/",
+    "3Blue1Brown \"线性代数本质\"": "https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab",
+}
+
 # 书籍作者映射
 BOOK_AUTHORS = {
     "《GPT 图解》": "黄佳",
@@ -551,6 +592,7 @@ def main():
             bookmark = Bookmark(
                 type="paper",
                 title=p["title"],
+                url=PAPER_URLS.get(p["title"], ""),
                 notes=p.get("contribution", ""),
                 _extra_fields=json.dumps({
                     "author": p.get("author", ""),
@@ -594,10 +636,11 @@ def main():
         videos_data = parse_videos(content)
         video_count = 0
         for v in videos_data:
+            url = v.get("url") or VIDEO_URLS.get(v["title"], "")
             bookmark = Bookmark(
                 type="video",
                 title=v["title"],
-                url=v.get("url", ""),
+                url=url,
                 notes=v.get("description", ""),
                 _extra_fields=json.dumps({
                     "platform": v.get("platform", ""),
@@ -619,6 +662,7 @@ def main():
             bookmark = Bookmark(
                 type="book",
                 title=b["title"],
+                url=BOOK_URLS.get(b["title"], ""),
                 notes=b.get("description", ""),
                 _extra_fields=json.dumps({
                     "author": b.get("author", ""),
