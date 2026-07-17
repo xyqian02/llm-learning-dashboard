@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Pencil, ExternalLink, FileText, BookmarkPlus } from 'lucide-react'
+import { Pencil, ExternalLink, FileText, BookmarkPlus, Loader2, AlertTriangle } from 'lucide-react'
 import { apiGet, apiPut } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import type { RoadmapNodeDetail } from '@/types'
@@ -32,7 +32,7 @@ export function NodeDetail({ nodeId, onEdit }: NodeDetailProps) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const { data: node, isLoading } = useQuery({
+  const { data: node, isLoading, isError } = useQuery({
     queryKey: ['roadmap', 'node', nodeId],
     queryFn: () => apiGet<RoadmapNodeDetail>(`/roadmap/nodes/${nodeId}`),
     enabled: !!nodeId,
@@ -53,16 +53,19 @@ export function NodeDetail({ nodeId, onEdit }: NodeDetailProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
-        加载中...
+      <div className="flex flex-col items-center justify-center h-full gap-3">
+        <Loader2 className="h-6 w-6 animate-spin text-amber-500" />
+        <p className="text-sm text-muted-foreground">加载节点详情...</p>
       </div>
     )
   }
 
-  if (!node) {
+  if (isError || !node) {
     return (
-      <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
-        节点数据加载失败
+      <div className="flex flex-col items-center justify-center h-full py-16">
+        <AlertTriangle className="h-10 w-10 text-red-400 mb-3" />
+        <p className="text-red-500 mb-2">⚠️ 节点数据加载失败</p>
+        <p className="text-sm text-muted-foreground">请尝试重新选择节点</p>
       </div>
     )
   }

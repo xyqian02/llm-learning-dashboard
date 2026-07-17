@@ -205,9 +205,9 @@ export function NotesPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] overflow-hidden">
       {/* 左侧：笔记列表 */}
-      <div className="w-[40%] min-w-[320px] max-w-[440px]">
+      <div className="w-full lg:w-[40%] lg:min-w-[320px] lg:max-w-[440px] h-2/5 lg:h-auto">
         <NoteList
           notesData={mergedNotesData}
           tags={tags}
@@ -259,7 +259,7 @@ export function NotesPage() {
             <p className="text-lg">选择一篇笔记或创建新笔记</p>
             <button
               onClick={handleNew}
-              className="mt-4 rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              className="mt-4 rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 active:scale-95"
             >
               创建笔记
             </button>

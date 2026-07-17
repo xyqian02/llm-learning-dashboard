@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Loader2,
 } from 'lucide-react'
 import { apiGet, apiPut } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -378,22 +379,32 @@ export function BookmarksPage() {
 
       {/* ---- Content area ---- */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-20">
-          <p className="text-muted-foreground">加载中...</p>
+        <div className="flex flex-col items-center justify-center py-20 gap-2">
+          <Loader2 className="h-6 w-6 animate-spin text-amber-500" />
+          <p className="text-sm text-muted-foreground">加载中...</p>
         </div>
       ) : isError ? (
-        <div className="flex items-center justify-center py-20">
-          <p className="text-destructive">
-            加载失败: {(error as Error)?.message || '未知错误'}
+        <div className="flex flex-col items-center justify-center py-20">
+          <p className="text-red-500 mb-2">⚠️ 加载失败</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            {(error as Error)?.message || '未知错误'}
           </p>
+          <button
+            onClick={() => queryClient.invalidateQueries({ queryKey: ['bookmarks'] })}
+            className="text-sm text-amber-600 hover:underline active:scale-95 transition-transform"
+          >
+            点击重试
+          </button>
         </div>
       ) : items.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Star className="h-12 w-12 text-muted-foreground/30 mb-4" />
-          <p className="text-muted-foreground mb-1">
-            {search || tagId ? '没有找到匹配的收藏' : '暂无收藏'}
-          </p>
-          <p className="text-sm text-muted-foreground/60 mb-6">
+          <div className="mb-4 text-5xl">
+            {search || tagId ? '🔍' : '📑'}
+          </div>
+          <h3 className="text-lg font-medium text-gray-600 mb-1">
+            {search || tagId ? '没有找到匹配的收藏' : '还没有收藏'}
+          </h3>
+          <p className="text-sm text-muted-foreground mb-6">
             {search || tagId
               ? '尝试调整搜索条件或清除筛选'
               : '点击下方按钮添加第一条收藏'}
@@ -402,7 +413,7 @@ export function BookmarksPage() {
             <button
               type="button"
               onClick={handleOpenNew}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors font-medium"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-amber-500 text-white rounded-lg hover:bg-amber-600 active:scale-95 transition-all duration-200 font-medium"
             >
               <Plus className="h-4 w-4" />
               添加{BOOKMARK_TYPES.find((t) => t.value === activeType)?.label}
@@ -412,7 +423,7 @@ export function BookmarksPage() {
       ) : (
         <>
           {/* ---- Card Grid ---- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {items.map((bookmark) => (
               <BookmarkCard
                 key={bookmark.id}
@@ -429,7 +440,7 @@ export function BookmarksPage() {
             <button
               type="button"
               onClick={handleOpenNew}
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-amber-400 hover:text-amber-600 hover:bg-amber-50/50 transition-all duration-200 font-medium"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-amber-400 hover:text-amber-600 hover:bg-amber-50/50 transition-all duration-200 font-medium active:scale-95"
             >
               <Plus className="h-4 w-4" />
               添加

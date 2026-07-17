@@ -196,8 +196,13 @@ export function RoadmapTree({
         <div className="flex items-center justify-between px-3 py-3 border-b border-border">
           <h2 className="text-sm font-semibold text-foreground">学习路线</h2>
         </div>
-        <div className="flex items-center justify-center flex-1 text-sm text-muted-foreground">
-          加载中...
+        <div className="flex flex-col items-center justify-center flex-1 gap-2">
+          <div className="flex items-center gap-1">
+            <span className="h-2 w-2 animate-bounce rounded-full bg-amber-400" style={{ animationDelay: '0ms' }} />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-amber-400" style={{ animationDelay: '150ms' }} />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-amber-400" style={{ animationDelay: '300ms' }} />
+          </div>
+          <span className="text-xs text-muted-foreground">加载中...</span>
         </div>
       </div>
     )
@@ -242,8 +247,14 @@ export function RoadmapTree({
       {/* Tree */}
       <div className="flex-1 overflow-y-auto px-1 py-1">
         {filteredTree.length === 0 ? (
-          <div className="text-center text-sm text-muted-foreground py-8">
-            {searchTerm ? '无匹配节点' : '暂无节点，点击上方 + 新增'}
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="mb-3 text-4xl opacity-30">{searchTerm ? '🔍' : '🌱'}</div>
+            <h3 className="text-sm font-medium text-gray-600">
+              {searchTerm ? '无匹配节点' : '还没有学习节点'}
+            </h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {searchTerm ? '尝试其他关键词搜索' : '点击上方 + 号创建第一个节点'}
+            </p>
           </div>
         ) : (
           filteredTree.map((node) => (

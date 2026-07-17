@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { Save, Trash2, Plus, X, Link2, Loader2, Check } from 'lucide-react'
 import MDEditor from '@uiw/react-md-editor'
 import '@uiw/react-md-editor/markdown-editor.css'
@@ -132,7 +133,7 @@ export function NoteEditor({
           <button
             onClick={handleSave}
             disabled={isSaving || (isEmpty && isNew)}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 disabled:opacity-50 active:scale-95"
           >
             {isSaving ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -145,7 +146,7 @@ export function NoteEditor({
             <button
               onClick={() => setShowDeleteConfirm(true)}
               disabled={isDeleting}
-              className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 px-3 py-1.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 px-3 py-1.5 text-sm font-medium text-destructive transition-all duration-200 hover:bg-destructive/10 disabled:opacity-50 active:scale-95"
             >
               {isDeleting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -282,7 +283,12 @@ export function NoteEditor({
       {/* 删除确认弹窗 */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-lg">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-lg"
+          >
             <h3 className="mb-2 text-base font-semibold text-foreground">确认删除</h3>
             <p className="mb-4 text-sm text-muted-foreground">
               确定要删除笔记「{note?.title || '无标题'}」吗？此操作无法撤销。
@@ -290,7 +296,7 @@ export function NoteEditor({
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="rounded-md px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="rounded-md px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground active:scale-95 transition-transform"
               >
                 取消
               </button>
@@ -299,12 +305,12 @@ export function NoteEditor({
                   onDelete()
                   setShowDeleteConfirm(false)
                 }}
-                className="rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition-colors hover:bg-destructive/90"
+                className="rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition-colors hover:bg-destructive/90 active:scale-95 transition-transform"
               >
                 确认删除
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
     </div>

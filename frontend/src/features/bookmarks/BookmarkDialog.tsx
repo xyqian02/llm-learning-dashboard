@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import { apiPost, apiPut, apiDelete } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -167,11 +168,17 @@ export function BookmarkDialog({
   if (!open) return null
 
   return (
+    <AnimatePresence>
+      {open && (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={onClose}
     >
-      <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
         className="relative bg-card border border-border rounded-xl shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
@@ -516,7 +523,9 @@ export function BookmarkDialog({
             </p>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
+      )}
+    </AnimatePresence>
   )
 }

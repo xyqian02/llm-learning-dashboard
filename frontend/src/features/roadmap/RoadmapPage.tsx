@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { motion } from 'framer-motion'
 import { Pencil, Plus, Trash2, X } from 'lucide-react'
 import { apiPost, apiPut, apiDelete } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -92,7 +93,12 @@ function NodeDialog({
         onClick={onClose}
       />
       {/* 弹窗 */}
-      <div className="relative bg-card rounded-xl shadow-xl border border-border w-full max-w-lg mx-4 p-6">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        className="relative bg-card rounded-xl shadow-xl border border-border w-full max-w-lg mx-4 p-6"
+      >
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-semibold text-foreground">
             {mode === 'edit' ? '编辑节点' : '新增节点'}
@@ -219,7 +225,7 @@ function NodeDialog({
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   )
 }
@@ -247,7 +253,12 @@ function DeleteDialog({ node, onClose }: DeleteDialogProps) {
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <div className="relative bg-card rounded-xl shadow-xl border border-border w-full max-w-sm mx-4 p-6">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        className="relative bg-card rounded-xl shadow-xl border border-border w-full max-w-sm mx-4 p-6"
+      >
         <div className="flex items-center gap-3 mb-4">
           <div className="flex items-center justify-center w-10 h-10 rounded-full bg-red-100 text-red-600 flex-shrink-0">
             <Trash2 className="h-5 w-5" />
@@ -281,7 +292,7 @@ function DeleteDialog({ node, onClose }: DeleteDialogProps) {
             {mutation.isPending ? '删除中...' : '删除'}
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }
@@ -380,9 +391,9 @@ export function RoadmapPage() {
   )
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] -m-6 lg:-m-8">
+    <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] -m-4 sm:-m-6 lg:-m-8">
       {/* 左侧：路线树 */}
-      <div className="w-[35%] min-w-[280px] max-w-[420px] border-r border-border bg-card overflow-hidden">
+      <div className="w-full md:w-[35%] md:min-w-[280px] md:max-w-[420px] border-b md:border-b-0 md:border-r border-border bg-card overflow-hidden h-1/3 md:h-auto">
         <RoadmapTree
           selectedId={selectedId}
           onSelect={handleSelect}

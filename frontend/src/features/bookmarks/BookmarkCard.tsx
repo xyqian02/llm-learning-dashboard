@@ -96,8 +96,8 @@ export function BookmarkCard({
   return (
     <div
       className={cn(
-        'group relative rounded-xl border border-border bg-card p-5',
-        'hover:-translate-y-1 hover:shadow-lg transition-all duration-200 cursor-pointer',
+        'group relative rounded-xl border border-border bg-card p-5 shadow-sm',
+        'hover:-translate-y-1 hover:shadow-md transition-all duration-200 cursor-pointer',
         'flex flex-col'
       )}
       onClick={onClick}

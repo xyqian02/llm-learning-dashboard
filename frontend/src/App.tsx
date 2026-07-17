@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { HomePage } from './components/layout/HomePage'
 import { AppShell } from './components/layout/AppShell'
+import { NotFoundPage } from './components/layout/NotFoundPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 import { RoadmapPage } from './features/roadmap/RoadmapPage'
 import { NotesPage } from './features/notes/NotesPage'
@@ -23,6 +24,7 @@ function App() {
             <Route path="/bookmarks" element={<BookmarksPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

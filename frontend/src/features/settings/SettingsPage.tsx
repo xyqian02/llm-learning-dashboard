@@ -14,6 +14,8 @@ import {
   ChevronDown,
   RefreshCw,
   Check,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import { apiGet } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -284,6 +286,28 @@ function NoteSelectPanel({
 /* ------------------------------------------------------------------ */
 
 export function SettingsPage() {
+  // ---- Dark Mode ----
+  const [isDark, setIsDark] = useState(() => {
+    const stored = localStorage.getItem('theme')
+    if (stored === 'dark') {
+      document.documentElement.classList.add('dark')
+      return true
+    }
+    return false
+  })
+
+  const toggleDarkMode = () => {
+    const next = !isDark
+    setIsDark(next)
+    if (next) {
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+    }
+  }
+
   // ---- Toast ----
   const [toasts, setToasts] = useState<Toast[]>([])
 
@@ -527,6 +551,67 @@ export function SettingsPage() {
       </div>
 
       {/* ============================================================= */}
+      {/*  区块零：外观设置（暗色模式）                                     */}
+      {/* ============================================================= */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.02 }}
+        className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+      >
+        <h2 className="mb-4 text-lg font-semibold text-foreground flex items-center gap-2">
+          {isDark ? (
+            <Moon className="h-5 w-5 text-indigo-500" />
+          ) : (
+            <Sun className="h-5 w-5 text-amber-500" />
+          )}
+          外观设置
+        </h2>
+
+        <div className="flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3.5">
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              'flex h-10 w-10 items-center justify-center rounded-xl transition-colors',
+              isDark ? 'bg-indigo-100' : 'bg-amber-100'
+            )}>
+              {isDark ? (
+                <Moon className="h-5 w-5 text-indigo-600" />
+              ) : (
+                <Sun className="h-5 w-5 text-amber-600" />
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-foreground">暗色模式</p>
+              <p className="text-xs text-muted-foreground">
+                {isDark ? '当前为暗色主题' : '当前为亮色主题'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={toggleDarkMode}
+            className={cn(
+              'relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 flex-shrink-0',
+              isDark ? 'bg-indigo-600' : 'bg-gray-300'
+            )}
+          >
+            <span
+              className={cn(
+                'inline-flex h-5 w-5 items-center justify-center transform rounded-full bg-white shadow-sm transition-transform duration-200',
+                isDark ? 'translate-x-5' : 'translate-x-0.5'
+              )}
+            >
+              {isDark ? (
+                <Moon className="h-3 w-3 text-indigo-600" />
+              ) : (
+                <Sun className="h-3 w-3 text-amber-500" />
+              )}
+            </span>
+          </button>
+        </div>
+      </motion.div>
+
+      {/* ============================================================= */}
       {/*  区块一：数据备份 + 数据恢复                                    */}
       {/* ============================================================= */}
       <motion.div
@@ -552,7 +637,7 @@ export function SettingsPage() {
             <button
               onClick={handleBackup}
               disabled={backupLoading}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors disabled:opacity-50 flex-shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-all duration-200 disabled:opacity-50 flex-shrink-0 active:scale-95"
             >
               {backupLoading ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -591,7 +676,7 @@ export function SettingsPage() {
               <button
                 onClick={() => setShowRestoreConfirm(true)}
                 disabled={!restoreFile || restoreLoading}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 transition-all duration-200 disabled:opacity-50 active:scale-95"
               >
                 {restoreLoading ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -648,7 +733,7 @@ export function SettingsPage() {
               <button
                 onClick={handleImportConfirm}
                 disabled={importConfirmLoading}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50 flex-shrink-0"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 flex-shrink-0 active:scale-95"
               >
                 {importConfirmLoading ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -734,7 +819,7 @@ export function SettingsPage() {
             <button
               onClick={handleExportRoadmap}
               disabled={exportRoadmapLoading}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors disabled:opacity-50 flex-shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-all duration-200 disabled:opacity-50 flex-shrink-0 active:scale-95"
             >
               {exportRoadmapLoading ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -755,7 +840,7 @@ export function SettingsPage() {
             </div>
             <button
               onClick={openNotePanel}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition-colors flex-shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition-all duration-200 flex-shrink-0 active:scale-95"
             >
               <FileText className="h-3.5 w-3.5" />
               导出笔记
@@ -785,7 +870,7 @@ export function SettingsPage() {
                   onClick={() => handleExportBookmarks(type)}
                   disabled={exportBookmarkLoading !== null}
                   className={cn(
-                    'inline-flex items-center gap-1 px-3.5 py-1.5 text-xs rounded-lg text-white transition-colors disabled:opacity-50',
+                    'inline-flex items-center gap-1 px-3.5 py-1.5 text-xs rounded-lg text-white transition-all duration-200 disabled:opacity-50 active:scale-95',
                     color
                   )}
                 >

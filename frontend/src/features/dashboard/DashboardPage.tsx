@@ -158,20 +158,20 @@ export function DashboardPage() {
   const navigate = useNavigate()
 
   // 数据获取
-  const { data: overview, isLoading: overviewLoading } =
+  const { data: overview, isLoading: overviewLoading, isError: overviewError, refetch: refetchOverview } =
     useQuery<DashboardOverview>({
       queryKey: ['dashboard', 'overview'],
       queryFn: () => apiGet('/dashboard/overview'),
     })
 
-  const { data: stageProgress, isLoading: stageLoading } = useQuery<
+  const { data: stageProgress, isLoading: stageLoading, isError: stageError, refetch: refetchStage } = useQuery<
     StageProgress[]
   >({
     queryKey: ['dashboard', 'stage-progress'],
     queryFn: () => apiGet('/dashboard/stage-progress'),
   })
 
-  const { data: activities, isLoading: activityLoading } = useQuery<
+  const { data: activities, isLoading: activityLoading, isError: activityError, refetch: refetchActivity } = useQuery<
     RecentActivity[]
   >({
     queryKey: ['dashboard', 'recent-activity'],
@@ -179,6 +179,7 @@ export function DashboardPage() {
   })
 
   const isLoading = overviewLoading || stageLoading || activityLoading
+  const hasError = overviewError || stageError || activityError
 
   // "继续学习"按钮逻辑
   const handleContinue = async () => {
@@ -206,7 +207,7 @@ export function DashboardPage() {
         </div>
 
         {/* 3 张骨架卡片 */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <SkeletonCard />
           <SkeletonCard />
           <SkeletonCard />
@@ -247,6 +248,29 @@ export function DashboardPage() {
   }
 
   // -----------------------------------------------------------------------
+  // 错误态
+  // -----------------------------------------------------------------------
+  if (hasError && !overview && !stageProgress && !activities) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-foreground">仪表盘</h1>
+        </div>
+        <div className="flex flex-col items-center justify-center py-16 rounded-2xl border border-border bg-card">
+          <p className="text-red-500 mb-2 text-lg">⚠️ 数据加载失败</p>
+          <p className="text-sm text-muted-foreground mb-4">请检查后端服务是否运行</p>
+          <button
+            onClick={() => { refetchOverview(); refetchStage(); refetchActivity(); }}
+            className="text-sm text-amber-600 hover:underline active:scale-95 transition-transform"
+          >
+            点击重试
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // -----------------------------------------------------------------------
   // 正常渲染
   // -----------------------------------------------------------------------
   return (
@@ -256,7 +280,7 @@ export function DashboardPage() {
         <h1 className="text-2xl font-bold text-foreground">仪表盘</h1>
         <motion.button
           onClick={handleContinue}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-medium text-white shadow-md shadow-blue-200 transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg"
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-medium text-white shadow-md shadow-blue-200 transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg active:scale-95"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
         >
@@ -266,7 +290,7 @@ export function DashboardPage() {
       </div>
 
       {/* ---- 顶部 3 张指标卡片 ---- */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {/* 卡片 1：总进度 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -291,6 +315,7 @@ export function DashboardPage() {
           <div className="mt-3 h-2 w-full rounded-full bg-amber-200">
             <motion.div
               className="h-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600"
+              style={{ transition: 'width 1s ease-out' }}
               initial={{ width: 0 }}
               animate={{ width: `${overview?.total_progress ?? 0}%` }}
               transition={{ duration: 1.5, ease: 'easeOut', delay: 0.3 }}
@@ -375,6 +400,7 @@ export function DashboardPage() {
                 <div className="h-2.5 w-full rounded-full bg-muted">
                   <motion.div
                     className={`h-2.5 rounded-full ${getStageBarColor(index)}`}
+                    style={{ transition: 'width 1s ease-out' }}
                     initial={{ width: 0 }}
                     animate={{ width: `${stage.percentage}%` }}
                     transition={{

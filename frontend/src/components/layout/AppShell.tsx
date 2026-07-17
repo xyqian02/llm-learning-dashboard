@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Sidebar } from './Sidebar'
@@ -12,7 +13,19 @@ const pageVariants = {
 
 export function AppShell() {
   const location = useLocation()
-  const { isCollapsed } = useSidebarStore()
+  const { isCollapsed, setCollapsed } = useSidebarStore()
+
+  // 窄屏自动折叠侧边栏
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setCollapsed(true)
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    handleResize() // 初始检查
+    return () => window.removeEventListener('resize', handleResize)
+  }, [setCollapsed])
 
   return (
     <div className="flex min-h-screen bg-muted/30">
@@ -23,7 +36,7 @@ export function AppShell() {
           isCollapsed ? 'ml-16' : 'ml-64'
         )}
       >
-        <div className="p-6 lg:p-8">
+        <div className="p-4 sm:p-6 lg:p-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

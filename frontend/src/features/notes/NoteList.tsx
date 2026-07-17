@@ -109,7 +109,7 @@ export function NoteList({
         </div>
         <button
           onClick={onNew}
-          className="flex shrink-0 items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          className="flex shrink-0 items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 active:scale-95"
         >
           <Plus className="h-4 w-4" />
           新建
@@ -158,9 +158,15 @@ export function NoteList({
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : notes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-            <p className="text-sm">
-              {search || selectedTagId ? '没有找到匹配的笔记' : '暂无笔记，点击上方按钮创建'}
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="mb-4 text-5xl">📝</div>
+            <h3 className="text-sm font-medium text-gray-600">
+              {search || selectedTagId ? '没有找到匹配的笔记' : '还没有笔记'}
+            </h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {search || selectedTagId
+                ? '尝试调整搜索条件或清除筛选'
+                : '点击上方"新建"开始创建'}
             </p>
           </div>
         ) : (
